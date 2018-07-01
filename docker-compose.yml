@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  db-server:
+    image: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: pass 
+      MYSQL_DATABASE: auth_server
+      MYSQL_USER: po3rin
+      MYSQL_PASSWORD: 1234567890
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
+      
+  api:
+    build: .
+    ports:
+      - "8081:8081"
+    volumes:
+      - ".:/go/src/auth-server/"
+    depends_on:
+      - db-server
+    environment:
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: auth_server
+      MYSQL_USER: po3rin
+      MYSQL_HOST: db-server
+      MYSQL_PASSWORD: 1234567890
+      SIGNINGKEY: vdf0r8yt982erg8rt944rc23xfdfw34re23f23
